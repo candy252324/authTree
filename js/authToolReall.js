@@ -4,11 +4,15 @@ let box=document.getElementById('box')
 
 
 document.getElementById('getTreeData').addEventListener('click', function(){
-  chrome.runtime.sendMessage({msgType: "getTreeData"}, function(response) {
-    if(response){
-      box.innerHTML=response.currentUser.Authority
-    }
-  });
+   chrome.storage.sync.get("count", function(result) {
+      console.log('Value currently is ' + result.count);
+      box.innerHTML=result.count
+    });
+  // chrome.runtime.sendMessage({msgType: "getTreeData"}, function(response) {
+  //   if(response){
+  //     box.innerHTML=response.currentUser.Authority
+  //   }
+  // });
 })
 
 document.getElementById('setVueStore').addEventListener('click', function(){

@@ -1,7 +1,7 @@
 
 
 window.addEventListener('message', e => {
-  if (e.source === window && e.data.vueDetected) {
+  if (e.data.type === "emitData") {
     chrome.runtime.sendMessage(e.data)
   }
 })
@@ -10,7 +10,6 @@ function detect (win) {
   setTimeout(() => {
     // Method 1: Check Nuxt.js
     const nuxtDetected = Boolean(window.__NUXT__ || window.$nuxt)
-    debugger
     if (nuxtDetected) {
       let Vue
 

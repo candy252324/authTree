@@ -26,7 +26,14 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     // console.log(sender.tab ?
     //             "from a content script:" + sender.tab.url :
-    //             "from the extension");
-    if (request.greeting == "hello")
-      sendResponse({farewell: "I'm backgroud,goodbye!"});
+    // //             "from the extension");
+    // if (request.greeting == "hello")
+    //   sendResponse({farewell: "I'm backgroud,goodbye!"});
+    if(request.type==="emitData"){
+      console.log(request)
+      chrome.storage.sync.set({count: request.count})
+      // chrome.storage.sync.get("count", function(result) {
+      //   console.log('Value currently is ' + result.count);
+      // });
+    }
   });

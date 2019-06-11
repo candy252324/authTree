@@ -85,6 +85,13 @@ function installHook (target) {
     },
 
     emit (event) {
+      if(arguments[2] && (event==="vuex:mutation"||event==="vuex:init")){
+        window.postMessage({
+          type:"emitData",
+          count:arguments[2].count
+        })
+      }
+
       const $event = '$' + event
       let cbs = listeners[$event]
       if (cbs) {
@@ -114,8 +121,6 @@ function installHook (target) {
     hook.initialStore = clone(store)
   })
   hook.emit('vuex:mutation', (type,payload) => {
-    console.log(123)
-    console.log(a)
     console.log(payload)
     // hook.store = store
     // hook.initialStore = clone(store)
