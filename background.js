@@ -24,16 +24,13 @@ chrome.runtime.onInstalled.addListener(function() {
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    // console.log(sender.tab ?
-    //             "from a content script:" + sender.tab.url :
-    // //             "from the extension");
-    // if (request.greeting == "hello")
-    //   sendResponse({farewell: "I'm backgroud,goodbye!"});
+    console.log(request)
     if(request.type==="emitData"){
-      console.log(request)
       chrome.storage.sync.set({count: request.count})
-      // chrome.storage.sync.get("count", function(result) {
-      //   console.log('Value currently is ' + result.count);
-      // });
+    }else if(request.type==="change"){
+      console.log(54656465565)
+      chrome.runtime.sendMessage({type: "changeData",newData:{count:1000}}, function(response) {
+      
+      });
     }
   });

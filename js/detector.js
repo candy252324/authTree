@@ -6,6 +6,30 @@ window.addEventListener('message', e => {
   }
 })
 
+// 接受来自authtool的消息
+// chrome.runtime.onMessage.addListener(
+// function(request, sender, sendResponse) {
+//   console.log(request)
+//   if(request.type==="change"){
+//     console.log(request)
+//     window.postMessage({
+//       type:"change",
+//       data:{count:999}
+//     })
+//     // chrome.storage.sync.get("count", function(result) {
+//     //   console.log('Value currently is ' + result.count);
+//     // });
+//   }
+// });
+
+setInterval(()=>{
+  console.log(123)
+  window.postMessage({
+    type:"change",
+    data:{count:Math.random()}
+  })
+},1000)
+
 function detect (win) {
   setTimeout(() => {
     // Method 1: Check Nuxt.js

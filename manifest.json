@@ -12,7 +12,7 @@
   "web_accessible_resources": [
     "authTool.html",
     "authTool-background.html",
-    "build/backend.js"
+    "js/backend.js"
   ],
   "page_action": {
     "default_icon": {
