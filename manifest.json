@@ -8,7 +8,12 @@
     "persistent": false
   },
   "manifest_version": 2,
-  "devtools_page": "authTool.html",
+  "devtools_page": "authTool-background.html",
+  "web_accessible_resources": [
+    "authTool.html",
+    "authTool-background.html",
+    "build/backend.js"
+  ],
   "page_action": {
     "default_icon": {
       "16": "images/get_started16.png",
