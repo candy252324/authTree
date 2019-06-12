@@ -79,6 +79,7 @@ function installHook (target) {
     },
 
     emit (event) {
+      console.log(123)
       if(arguments[2] && (event==="vuex:mutation"||event==="vuex:init")){
         let auth=arguments[2].currentUser.Authority
         window.postMessage({

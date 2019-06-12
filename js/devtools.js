@@ -1,26 +1,16 @@
+
 var treeData = {
   // 复选框change事件
   onchange: function (input, yntree){
-    // console.log(this);
-    console.log(input);
-    console.log(yntree.data);
     let data=yntree.data
-    var checkedArr=[]
-    function foo(arr){
-      arr.forEach(item=>{
-        if(item.checked){
-          checkedArr.push(item.value)
-        }
-        if(item.children && item.children.length){
-          foo(item.children)
-        }
-      })
-    }
-    foo(data)
-    console.log(checkedArr)
+    setTimeout(()=>{
+     let checkedArr = getSelectedValue(data)
+      let auth=JSON.stringify(checkedArr)
+      // chrome.devtools.inspectedWindow.eval()方法，在网页的上下文中执行js代码
+      chrome.devtools.inspectedWindow.eval(`TravelToState(${auth})`)
+    },100)
   },
-  // 是否严格的遵循父子互相关联的做法
-  checkStrictly: true,
+  checkStrictly: true, // 是否严格的遵循父子互相关联的做法
   data:window.allTreeData
 };
 var yntree = new YnTree(document.getElementById("tree"), treeData);
@@ -38,32 +28,10 @@ chrome.runtime.onMessage.addListener(
       // let d=foo()
       box.innerHTML=JSON.stringify(request.auth)
     // }
+    let data=setSelectedValue(treeData.data, request.auth)
+    console.log(data)
+    yntree.reInit(data)
   });
-
-
-// chrome.devtools.inspectedWindow.eval()方法，在网页的上下文中执行js代码
-document.getElementById('setVueStore').addEventListener('click', function(){
-  let auth=JSON.stringify([10000,10001,10002])
-  chrome.devtools.inspectedWindow.eval(`TravelToState(${auth})`)
-
-  yntree.reInit([	{
-    name: "我的公司",
-    inputName: "company",
-    value: "我的公司",
-    children: [
-      {
-        name: "公司管理",
-        inputName: "company manage",
-        value: "公司管理"
-      },
-      {
-        name: "部门管理",
-        inputName: "department manage",
-        value: "部门管理"
-      }
-    ]
-  }]);
-})
 
 
 
@@ -90,4 +58,46 @@ function injectScript (scriptName, cb) {
     }
     cb()
   })
+}
+
+
+
+
+
+// ----------------------------- utils -----------------------------
+
+// 获取选中的id
+function getSelectedValue(arr){
+  var checkedArr=[]
+  function foo(arr){
+    arr.forEach(item=>{
+      if(item.checked){
+        checkedArr.push(item.value)
+        if(item.children && item.children.length){
+          foo(item.children)
+        }
+      }
+    })
+  }
+  foo(arr)
+  return checkedArr
+}
+
+
+function setSelectedValue(oldData,selectedArr){
+  let newData=JSON.parse(JSON.stringify(oldData))
+  function foo(arr){
+    arr.forEach((item,index)=>{
+      if(selectedArr.includes(item.value)){
+        item.checked=true
+      }else{
+        item.checked=false
+      }
+      if(item.children&&item.children.length){
+        foo(item.children)
+      }
+    })
+  }
+  foo(newData)
+  return newData
 }
