@@ -1,44 +1,17 @@
 
-// let tabId=chrome.devtools.inspectedWindow.tabId
-// var port = chrome.tabs.connect(tabId, {name: 'test-connect'});
-// port.postMessage({question: '你是谁啊？'});
-// port.onMessage.addListener(function(msg) {
-//   alert('收到消息：'+msg.answer);
-//   if(msg.answer && msg.answer.startsWith('我是'))
-//   {
-//       port.postMessage({question: '哦，原来是你啊！'});
-//   }
-// });
-
+var port = chrome.runtime.connect({name: "from-dector"});
 
 window.addEventListener('message', e => {
   if (e.data.type === "emitData") {
-    chrome.runtime.sendMessage(e.data)
+    port.postMessage({data: e.data});
   }
 })
 
-// 接受来自devtools的消息
-chrome.runtime.onMessage.addListener(
-function(request, sender, sendResponse) {
-  console.log(12121232)
-  if(request.type==="toDetector"){
-    window.postMessage({
-      type:"change",
-      data:{count:999}
-    })
-    // chrome.storage.sync.get("count", function(result) {
-    //   console.log('Value currently is ' + result.count);
-    // });
-  }
-});
 
-setInterval(()=>{
-  console.log(123)
-  window.postMessage({
-    type:"change",
-    data:{time:Math.random()}
-  })
-},5000)
+
+
+
+
 
 function detect (win) {
   setTimeout(() => {

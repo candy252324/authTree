@@ -3,17 +3,13 @@
 let box=document.getElementById('box')
 
 
-document.getElementById('getTreeData').addEventListener('click', function(){
-   chrome.storage.sync.get("count", function(result) {
-      console.log('Value currently is ' + result.count);
-      box.innerHTML=result.count
-    });
-  // chrome.runtime.sendMessage({msgType: "getTreeData"}, function(response) {
-  //   if(response){
-  //     box.innerHTML=response.currentUser.Authority
-  //   }
-  // });
-})
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    // console.log(request)
+    // if(request.type==="emitData"){
+      box.innerHTML=JSON.stringify(request)
+    // }
+  });
 
 
 // chrome.devtools.inspectedWindow.eval()方法，在网页的上下文中执行js代码
@@ -23,22 +19,26 @@ document.getElementById('setVueStore').addEventListener('click', function(){
 })
 
 
+
+
+
 // 1. inject backend code into page
 injectScript(chrome.runtime.getURL('js/inject.js'), () => {
   // 2. connect to background to setup proxy
-  const port = chrome.runtime.connect({
-    name: '' + chrome.devtools.inspectedWindow.tabId
-  })
-  let disconnected = false
-  // port.onDisconnect.addListener(() => {
-  //   disconnected = true
+  // const port = chrome.runtime.connect({
+  //   name: '' + chrome.devtools.inspectedWindow.tabId
   // })
-  port.onMessage.addListener(function(){
-    if (msg.question == "Who's there?"){
-      port.postMessage({answer: "yisheng"});
-    }
-  })
-  port.postMessage({name:123132})
+  // // let disconnected = false
+  // // port.onDisconnect.addListener(() => {
+  // //   disconnected = true
+  // // })
+  // port.onMessage.addListener(function(msg){
+  //   console.log(msg)
+  //   if (msg.question == "Who's there?"){
+  //     port.postMessage({answer: "yisheng"});
+  //   }
+  // })
+  // port.postMessage({name:123132})
 })
 
 function injectScript (scriptName, cb) {
@@ -47,6 +47,7 @@ function injectScript (scriptName, cb) {
       var script = document.constructor.prototype.createElement.call(document, 'script');
       script.src = "${scriptName}";
       document.documentElement.appendChild(script);
+      script.parentNode.removeChild(script);
     })()
   `
   chrome.devtools.inspectedWindow.eval(src, function (res, err) {

@@ -22,15 +22,27 @@ chrome.runtime.onInstalled.addListener(function() {
   });
 });
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    console.log(request)
-    if(request.type==="emitData"){
-      chrome.storage.sync.set({count: request.count})
-    }else if(request.type==="change"){
-      console.log(54656465565)
-      chrome.runtime.sendMessage({type: "changeData",newData:{count:1000}}, function(response) {
-      
-      });
-    }
+// chrome.runtime.onMessage.addListener(
+//   function(request, sender, sendResponse) {
+//     console.log(request)
+//     if(request.type==="emitData"){
+//       chrome.runtime.sendMessage(e.data)
+//       // chrome.storage.sync.set({count: request.count})
+//     }
+//   });
+
+  chrome.runtime.onConnect.addListener(function(port) {
+    port.onMessage.addListener(function(msg) {
+      if (msg.data.type == "emitData"){
+        console.log(msg)
+        chrome.runtime.sendMessage({auth: msg.data.auth})
+        // port.postMessage({auth: msg.data.auth});
+      }
+        //     port.postMessage({question: "Who's there?"});
+        // else if (msg.answer == "Madame")
+        //     port.postMessage({question: "Madame who?"});
+        // else if (msg.answer == "Madame... Bovary")
+        //     port.postMessage({question: "I don't get it."});
+    });
   });
+  

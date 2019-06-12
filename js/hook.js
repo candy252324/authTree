@@ -5,16 +5,10 @@
 
 if (document instanceof HTMLDocument) {
   const source = ';(' + installHook.toString() + ')(window)'
-
-  // if (isFirefox) {
-  //   // eslint-disable-next-line no-eval
-  //   window.eval(source) // in Firefox, this evaluates on the content window
-  // } else {
-    const script = document.createElement('script')
-    script.textContent = source
-    document.documentElement.appendChild(script)
-    script.parentNode.removeChild(script)
-  // }
+  const script = document.createElement('script')
+  script.textContent = source
+  document.documentElement.appendChild(script)
+  script.parentNode.removeChild(script)
 }
 
 
@@ -85,8 +79,9 @@ function installHook (target) {
     },
 
     emit (event) {
+      console.log("emit:",event)
       if(arguments[2] && (event==="vuex:mutation"||event==="vuex:init")){
-        let auth=arguments[2].currentUser.Authority
+        let auth=arguments[2].time
         console.log(auth)
         window.postMessage({
           type:"emitData",
