@@ -1,10 +1,15 @@
 
 const hook = window.__VUE_DEVTOOLS_GLOBAL_HOOK__
 
-console.log(aaa)
-function TravelToState(num){
+function TravelToState(auth){
   let d=hook.store.state
-  d.time=num
-  console.log("num:",num)
+  let authArr = auth
+  let authObj=authArr.map(au=>{
+    let obj={}
+    obj[au]=true
+    return obj
+  })
+  d.currentUser.Authority=authArr
+  d.currentUser.AuthorityObj=authObj
   hook.emit('vuex:travel-to-state', d)
 }
