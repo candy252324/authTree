@@ -18,23 +18,13 @@ document.getElementById('getTreeData').addEventListener('click', function(){
 
 // chrome.devtools.inspectedWindow.eval()方法，在网页的上下文中执行js代码
 document.getElementById('setVueStore').addEventListener('click', function(){
-  let num=Math.random()
-  let str=`
-    let state=hook.store.state;
-    state.count=${num};
-    hook.emit('vuex:travel-to-state', state)
-  `
-  chrome.devtools.inspectedWindow.eval(str)
-
-  // chrome.runtime.sendMessage({type: "change",newData:{count:1000}}, function(response) {
-  //   console.log(response);
-    // box.innerHTML=response.currentUser.Authority
-  // });
+  let num=JSON.stringify([Math.random(),1002])
+  chrome.devtools.inspectedWindow.eval(`TravelToState(${num})`)
 })
 
 
 // 1. inject backend code into page
-injectScript(chrome.runtime.getURL('js/backend.js'), () => {
+injectScript(chrome.runtime.getURL('js/inject.js'), () => {
   // 2. connect to background to setup proxy
   const port = chrome.runtime.connect({
     name: '' + chrome.devtools.inspectedWindow.tabId
@@ -48,19 +38,7 @@ injectScript(chrome.runtime.getURL('js/backend.js'), () => {
       port.postMessage({answer: "yisheng"});
     }
   })
-
-  // const bridge = new Bridge({
-  //   listen (fn) {
-  //     port.onMessage.addListener(fn)
-  //   },
-  //   send (data) {
-  //     if (!disconnected) {
-  //       port.postMessage(data)
-  //     }
-  //   }
-  // })
-  // // 3. send a proxy API to the panel
-  // cb(bridge)
+  port.postMessage({name:123132})
 })
 
 function injectScript (scriptName, cb) {

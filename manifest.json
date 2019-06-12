@@ -8,11 +8,11 @@
     "persistent": false
   },
   "manifest_version": 2,
-  "devtools_page": "authTool-background.html",
+  "devtools_page": "devtools-background.html",
   "web_accessible_resources": [
-    "authTool.html",
-    "authTool-background.html",
-    "js/backend.js"
+    "devtools.html",
+    "devtools-background.html",
+    "js/inject.js"
   ],
   "page_action": {
     "default_icon": {
