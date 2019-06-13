@@ -1,4 +1,6 @@
-// 面板开启，调用injectJS 的方法
+// chrome.devtools.inspectedWindow.eval()方法，在网页的上下文中执行js代码
+// 面板开启，调用injectJS 的方法, 主动获取数据
+// 解决页面刷新完成后再打开面板，接收不到hook.emit 发送的消息，导致没数据的问题
 chrome.devtools.inspectedWindow.eval(`getCurAuth()`)
 
 
@@ -13,7 +15,6 @@ var treeData = {
     setTimeout(()=>{
      let checkedArr = getSelectedValue(data)
       let auth=JSON.stringify(checkedArr)
-      // chrome.devtools.inspectedWindow.eval()方法，在网页的上下文中执行js代码
       chrome.devtools.inspectedWindow.eval(`TravelToState(${auth})`)
     },100)
   },
