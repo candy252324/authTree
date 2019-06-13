@@ -23,15 +23,10 @@ let box=document.getElementById('box')
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    // console.log(request)
-    // if(request.type==="emitData"){
-      // let d=foo()
-      box.innerHTML=JSON.stringify(request.auth)
-    // }
+    box.innerHTML=JSON.stringify(request.auth)
     let data=setSelectedValue(treeData.data, request.auth)
-    console.log(data)
     yntree.reInit(data)
-  });
+});
 
 
 
@@ -49,7 +44,7 @@ chrome.runtime.onMessage.addListener(
 
 
 
-  
+
 
 
 
@@ -73,12 +68,29 @@ function getSelectedValue(arr){
   return checkedArr
 }
 
+// 判断某个对象或者该对象的某个下级节点是否符合某个表达式
+function incluedeValue(obj,exp){
+  let bool=false
+  function fn(obj){
+    if(exp(obj)){
+      bool=true
+      return
+    }else if(obj.children && obj.children.length){
+      for(it of obj.children){
+        fn(it)
+      }
+    }
+  }
+  fn(obj)
+  return bool
+}
 
+// 根据选中的id设置tree
 function setSelectedValue(oldData,selectedArr){
   let newData=JSON.parse(JSON.stringify(oldData))
   function foo(arr){
     arr.forEach((item,index)=>{
-      if(selectedArr.includes(item.value)){
+      if(incluedeValue(item, item=>selectedArr.includes(item.value))){
         item.checked=true
       }else{
         item.checked=false
@@ -90,4 +102,22 @@ function setSelectedValue(oldData,selectedArr){
   }
   foo(newData)
   return newData
+}
+
+// 节点过滤
+// this.treeData = filterTree(this.treeData_backup, node => node.title.indexOf(this.searchVal)>-1)
+function filterTree(nodes, predicate){
+  if (!(nodes && nodes.length)) {
+    return [];
+  }
+  const newChildren = [];
+  for (const node of nodes) {
+    if (predicate(node)) {
+      newChildren.push(node);
+      node.children = filterTree(node.children, predicate);
+    } else {
+      newChildren.push(...filterTree(node.children, predicate));
+    }
+  }
+  return newChildren;
 }

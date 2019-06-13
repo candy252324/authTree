@@ -24,7 +24,6 @@ window.allTreeData= [
         name: "使用移动端校宝秀招生工具",
         relType: "consolt",
         ref: 120000,
-        checked:true
       },
       {
         id: 110020,

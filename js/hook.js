@@ -23,7 +23,7 @@ function injectCustomJs(jsPath) {
   // 获得的地址类似：chrome-extension://ihcokhadfjfchaeagdoclpnjdiokfakg/js/inject.js
   script.src = chrome.runtime.getURL(jsPath);
   document.documentElement.appendChild(script);
-  script.parentNode.removeChild(script);
+  // script.parentNode.removeChild(script);
 }
 
 
@@ -96,6 +96,7 @@ function installHook (target) {
       // <-------------------------------------------
       if(arguments[2] && (event==="vuex:mutation"||event==="vuex:init")){
         let auth=arguments[2].currentUser.Authority
+        console.log(auth)
         window.postMessage({
           type:"emitData",
           auth:auth
