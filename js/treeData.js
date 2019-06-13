@@ -2,7 +2,7 @@
 function dealTreeData(arr){
   arr.forEach(ele=>{
     ele.expand=true
-    ele.title=ele.name + " "+ ele.id
+    ele.name=ele.name + " "+ ele.id
     ele.value=ele.id
     // if(self.currentUser.Authority.includes(ele.id)){
     //   ele.checked=true

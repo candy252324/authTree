@@ -98,7 +98,7 @@ function installHook (target) {
         let auth=arguments[2].currentUser.Authority
         console.log(auth)
         window.postMessage({
-          type:"emitData",
+          type:"data-from-hook",
           auth:auth
         })
       }

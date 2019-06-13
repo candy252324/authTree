@@ -1,3 +1,10 @@
+// 面板开启，调用injectJS 的方法
+chrome.devtools.inspectedWindow.eval(`getCurAuth()`)
+
+
+
+
+
 
 var treeData = {
   // 复选框change事件
@@ -16,14 +23,13 @@ var treeData = {
 var yntree = new YnTree(document.getElementById("tree"), treeData);
 
 
-let box=document.getElementById('box')
+
 
 
 
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    box.innerHTML=JSON.stringify(request.auth)
     let data=setSelectedValue(treeData.data, request.auth)
     yntree.reInit(data)
 });

@@ -24,9 +24,9 @@
 
 
 chrome.runtime.onConnect.addListener(function(port) {
-  // console.log(port.name)
+  // console.log(port.name) // from-dector
   port.onMessage.addListener(function(msg) {
-    if (msg.data.type == "emitData"){
+    if (msg.data.type == "data-from-hook"||msg.data.type==="data-from-inject"){
       console.log(msg)
       chrome.runtime.sendMessage({auth: msg.data.auth})
     }
