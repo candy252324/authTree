@@ -37,29 +37,19 @@ chrome.runtime.onMessage.addListener(
 
 
 
-// 1. inject backend code into page
-injectScript(chrome.runtime.getURL('js/inject.js'), () => {
 
-})
 
-// script.parentNode.removeChild(script);
-function injectScript (scriptName, cb) {
-  const src = `
-    (function() {
-      var script = document.constructor.prototype.createElement.call(document, 'script');
-      script.src = "${scriptName}";
-      document.documentElement.appendChild(script);
-    
-    })()
-  `
-  chrome.devtools.inspectedWindow.eval(src, function (res, err) {
-    if (err) {
-      console.log(err)
-    }
-    cb()
-  })
-}
 
+
+
+
+
+
+
+
+
+
+  
 
 
 
