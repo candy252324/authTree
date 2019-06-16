@@ -1,16 +1,20 @@
+// 根据options中存储的值，判断是否需要installHook
+chrome.storage.sync.get("hasInstallDevtools", function(res) {
+  let hasInstallDevtools = res.hasInstallDevtools
+  if(hasInstallDevtools === "no"){
+    injectScript()
+  }
+})
 
-// content scripts跟页面的脚本作用域是分开的，不能直接交互，https://developer.chrome.com/
-// 但是页面的DOM却是共享的，所以可以通过向页面插入脚本的方式来修改页面window对象。
-
-
-if (document instanceof HTMLDocument) {
-  const source = ';(' + installHook.toString() + ')(window)'
-  const script = document.createElement('script')
-  script.textContent = source
-  document.documentElement.appendChild(script)
-  script.parentNode.removeChild(script)
+function injectScript(){
+  if (document instanceof HTMLDocument) {
+    const source = ';(' + installHook.toString() + ')(window)'
+    const script = document.createElement('script')
+    script.textContent = source
+    document.documentElement.appendChild(script)
+    script.parentNode.removeChild(script)
+  }
 }
-
 
 
 

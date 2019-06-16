@@ -8,7 +8,6 @@ function getSelectedValue(arr){
       if(item.checked){
         checkedArr.push(item.value)
         if(item.children && item.children.length){
-          console.log(item.children)
           foo(item.children)
         }
       }
