@@ -3,8 +3,7 @@
 // 解决页面刷新完成后再打开面板，接收不到hook.emit 发送的消息，导致没数据的问题
 chrome.devtools.inspectedWindow.eval(`getCurAuth()`)
 
-
-
+console.log("devtools.js 执行")
 
 
 

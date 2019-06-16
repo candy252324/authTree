@@ -9,21 +9,6 @@ if (document instanceof HTMLDocument) {
   script.textContent = source
   document.documentElement.appendChild(script)
   script.parentNode.removeChild(script)
-
-  injectCustomJs('js/inject.js')
-
-}
-
-
-
-
-function injectCustomJs(jsPath) {
-  var script = document.createElement('script');
-  script.setAttribute('type', 'text/javascript');
-  // 获得的地址类似：chrome-extension://ihcokhadfjfchaeagdoclpnjdiokfakg/js/inject.js
-  script.src = chrome.runtime.getURL(jsPath);
-  document.documentElement.appendChild(script);
-  // script.parentNode.removeChild(script);
 }
 
 
@@ -93,16 +78,6 @@ function installHook (target) {
     },
 
     emit (event) {
-      // <-------------------------------------------
-      if(arguments[2] && (event==="vuex:mutation"||event==="vuex:init")){
-        let auth=arguments[2].currentUser.Authority
-        console.log(auth)
-        window.postMessage({
-          type:"data-from-hook",
-          auth:auth
-        })
-      }
-      // -------------------------------------------->
       const $event = '$' + event
       let cbs = listeners[$event]
       if (cbs) {
@@ -139,7 +114,6 @@ function installHook (target) {
       return hook
     }
   })
-
 
 
 
