@@ -17,9 +17,8 @@ function injectScript(){
 }
 
 
-
+// vue-devtools  5.1.0
 function installHook (target) {
-
   let listeners = {}
 
   if (target.hasOwnProperty('__VUE_DEVTOOLS_GLOBAL_HOOK__')) return
@@ -106,11 +105,43 @@ function installHook (target) {
     }
   })
 
-  // 接收 vuex 派发的初始化事件 devtoolHook.emit('vuex:init', store) 
-  // 拿到store 并挂载到hook 上
   hook.once('vuex:init', store => {
     hook.store = store
-    hook.initialStore = clone(store)
+    hook.initialState = clone(store.state)
+    const origReplaceState = store.replaceState.bind(store)
+    store.replaceState = state => {
+      hook.initialState = clone(state)
+      origReplaceState(state)
+    }
+    // Dynamic modules
+    let origRegister, origUnregister
+    if (store.registerModule) {
+      hook.storeModules = []
+      origRegister = store.registerModule.bind(store)
+      store.registerModule = (path, module, options) => {
+        if (typeof path === 'string') path = [path]
+        hook.storeModules.push({ path, module, options })
+        origRegister(path, module, options)
+        if (process.env.NODE_ENV !== 'production') console.log('early register module', path, module, options)
+      }
+      origUnregister = store.unregisterModule.bind(store)
+      store.unregisterModule = (path) => {
+        if (typeof path === 'string') path = [path]
+        const key = path.join('/')
+        const index = hook.storeModules.findIndex(m => m.path.join('/') === key)
+        if (index !== -1) hook.storeModules.splice(index, 1)
+        origUnregister(path)
+        if (process.env.NODE_ENV !== 'production') console.log('early unregister module', path)
+      }
+    }
+    hook.flushStoreModules = () => {
+      store.replaceState = origReplaceState
+      if (store.registerModule) {
+        store.registerModule = origRegister
+        store.unregisterModule = origUnregister
+      }
+      return hook.storeModules || []
+    }
   })
 
   Object.defineProperty(target, '__VUE_DEVTOOLS_GLOBAL_HOOK__', {
@@ -118,30 +149,6 @@ function installHook (target) {
       return hook
     }
   })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Clone deep utility for cloning initial state of the store
   // REFERENCE: https://github.com/pvorb/clone
@@ -181,7 +188,9 @@ function installHook (target) {
     var allParents = []
     var allChildren = []
 
-    var useBuffer = typeof Buffer !== 'undefined'
+    var useBuffer = typeof Buffer !== 'undefined' && typeof Buffer.isBuffer === 'function'
+
+    var isBuffer = typeof window !== 'undefined' ? browserIsBuffer : Buffer.isBuffer
 
     if (typeof circular === 'undefined') { circular = true }
 
@@ -219,7 +228,7 @@ function installHook (target) {
         if (parent.lastIndex) child.lastIndex = parent.lastIndex
       } else if (clone.__isDate(parent)) {
         child = new Date(parent.getTime())
-      } else if (useBuffer && Buffer.isBuffer(parent)) {
+      } else if (useBuffer && isBuffer(parent)) {
         if (Buffer.from) {
           // Node.js >= 5.10.0
           child = Buffer.from(parent)
@@ -269,6 +278,11 @@ function installHook (target) {
       for (var i in parent) {
         var attrs = Object.getOwnPropertyDescriptor(parent, i)
         if (attrs) {
+          if (attrs.hasOwnProperty('get') && attrs.get.name === 'computedGetter') {
+            Object.defineProperty(child, i, attrs)
+            continue
+          }
+
           child[i] = _clone(parent[i], depth - 1)
         }
       }
@@ -340,5 +354,9 @@ function installHook (target) {
 
   function _instanceof (obj, type) {
     return type != null && obj instanceof type
+  }
+
+  function browserIsBuffer (b) {
+    return !!(b != null && '_isBuffer' in b && b._isBuffer)
   }
 }

@@ -1,19 +1,3 @@
-
-function dealTreeData(arr){
-  arr.forEach(ele=>{
-    ele.expand=true
-    ele.name=ele.name + " "+ ele.id
-    ele.value=ele.id
-    // if(self.currentUser.Authority.includes(ele.id)){
-    //   ele.checked=true
-    // }
-    if(ele.item && ele.item.length){
-      ele.children=ele.item
-      dealTreeData(ele.item)
-    }
-  })
-}
-
 window.allTreeData= [
   {
     id: 110000,
@@ -1265,3 +1249,18 @@ window.allTreeData= [
 ];
 
 dealTreeData(window.allTreeData)
+
+function dealTreeData(arr){
+  arr.forEach(ele=>{
+    ele.expand=true
+    ele.name=ele.name + " "+ ele.id
+    ele.value=ele.id
+    // if(self.currentUser.Authority.includes(ele.id)){
+    //   ele.checked=true
+    // }
+    if(ele.item && ele.item.length){
+      ele.children=ele.item
+      dealTreeData(ele.item)
+    }
+  })
+}
